@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Access</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f1f5f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+.card {
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  width: 340px;
+  max-width: calc(100% - 56px);
+  box-shadow: 0 8px 30px #0001;
+}
+h2 { text-align: center; }
+input, button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  box-sizing: border-box;
+  border-radius: 8px;
+}
+input { border: 1px solid #ccc; }
+button {
+  background: #214eae;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+#payment { display: none; text-align: center; }
+#qr { width: 220px; max-width: 100%; }
+.note { font-size: 13px; color: #555; }
+</style>
+</head>
+<body>
+
+<div class="card" id="login">
+  <h2>Login</h2>
+  <form id="loginForm">
+    <input id="userid" placeholder="Login ID" required>
+    <input id="password" type="password"
+           placeholder="Password" required>
+    <button type="submit">Login</button>
+  </form>
+  <p class="note" id="msg"></p>
+</div>
+
+<div class="card" id="payment">
+  <h2>Complete Payment</h2>
+  <h1>₹1,399</h1>
+
+  <img id="qr" alt="UPI QR Code">
+
+  <p><b>UPI ID:</b><br>7027080269@ptyes</p>
+
+  <p class="note">
+    भुगतान करने के बाद अपने UPI ऐप में ट्रांजैक्शन की पुष्टि करें।
+  </p>
+
+  <input id="admincode" placeholder="Enter Admin Code">
+  <button id="verify">Verify & Continue</button>
+  <p id="adminmsg"></p>
+</div>
+
+<script>
+const UPI = "7027080269@ptyes";
+const AMOUNT = "1399";
+const TARGET =
+  "https://www.printfastportal.net/members/login";
+
+// QR image is generated from a UPI payment URI.
+// Internet access is required to load this QR image.
+const uri = "upi://pay?pa=" + encodeURIComponent(UPI)
+  + "&am=" + AMOUNT
+  + "&cu=INR"
+  + "&tn=Portal%20Access";
+
+document.getElementById("qr").src =
+  "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data="
+  + encodeURIComponent(uri);
+
+document.getElementById("loginForm")
+.addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const id = document.getElementById("userid").value;
+  const pw = document.getElementById("password").value;
+
+  if (id === "9041348717" && pw === "Ucl@2121") {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("payment").style.display = "block";
+  } else {
+    document.getElementById("msg").textContent =
+      "Invalid Login ID or Password";
+  }
+});
+
+document.getElementById("verify")
+.addEventListener("click", function() {
+  const code = document.getElementById("admincode").value;
+
+  if (code === "1710") {
+    window.location.href = TARGET;
+  } else {
+    document.getElementById("adminmsg").textContent =
+      "Invalid Admin Code";
+  }
+});
+</script>
+
+</body>
+</html>
